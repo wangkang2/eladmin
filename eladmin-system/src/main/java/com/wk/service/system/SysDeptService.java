@@ -1,6 +1,7 @@
 package com.wk.service.system;
 
 import com.wk.entity.system.SysDept;
+import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
 
 import java.util.Collection;
@@ -21,5 +22,5 @@ public interface SysDeptService {
 
     List<Long> getDeptChildren(List<SysDept> deptChildren);
 
-    List<SysDept> queryDept(DeptQuery deptQuery);
+    List<DeptDto> queryDept(DeptQuery deptQuery);
 }

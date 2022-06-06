@@ -8,6 +8,7 @@ package com.wk.service.system.impl;/**
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wk.entity.system.SysDept;
 import com.wk.entity.system.SysRole;
+import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
 import com.wk.mapper.system.SysDeptMapper;
 import com.wk.service.system.SysDeptService;
@@ -70,7 +71,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public List<SysDept> queryDept(DeptQuery deptQuery) {
+    public List<DeptDto> queryDept(DeptQuery deptQuery) {
 
         return sysDeptMapper.queryDept(deptQuery);
     }

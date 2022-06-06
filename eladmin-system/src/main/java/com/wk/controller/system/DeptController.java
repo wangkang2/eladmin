@@ -6,6 +6,7 @@ package com.wk.controller.system;/**
 
 
 import com.wk.entity.system.SysDept;
+import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
 import com.wk.service.system.SysDeptService;
 import com.wk.utils.PageUtil;
@@ -48,7 +49,7 @@ public class DeptController {
     @GetMapping
     @PreAuthorize("@el.check('user:list','dept:list')")
     public ResponseEntity<Object> queryDept(DeptQuery deptQuery) throws Exception {
-        List<SysDept> sysDepts = sysDeptService.queryDept(deptQuery);
+        List<DeptDto> sysDepts = sysDeptService.queryDept(deptQuery);
         return new ResponseEntity<>(PageUtil.toPage(sysDepts, sysDepts.size()), HttpStatus.OK);
     }
 }

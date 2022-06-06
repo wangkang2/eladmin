@@ -8,6 +8,7 @@ package com.wk.mapper.system;/**
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wk.entity.system.SysDept;
+import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -34,7 +35,7 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
     Set<SysDept> findSysDeptByRoleId(@Param("ew") QueryWrapper<SysDept> sysDeptQueryWrapper);
 
     @SelectProvider(type = SysDeptMapper.SysDeptProvider.class,method = "queryDept")
-    List<SysDept> queryDept(DeptQuery deptQuery);
+    List<DeptDto> queryDept(DeptQuery deptQuery);
 
     class SysDeptProvider{
         public String queryDept(DeptQuery deptQuery){
