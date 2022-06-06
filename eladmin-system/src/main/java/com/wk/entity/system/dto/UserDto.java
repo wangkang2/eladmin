@@ -22,10 +22,10 @@ import java.util.List;
 @Data
 public class UserDto extends SysUser {
 
-    private List<SysRole> sysRoles;
+    private List<SysRole> roles;
 
-    private List<SysJob> sysJobs;
+    private List<SysJob> jobs;
 
-    private SysDept sysDept;
+    private SysDept dept;
 
 }

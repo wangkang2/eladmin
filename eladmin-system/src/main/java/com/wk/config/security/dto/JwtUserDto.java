@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JwtUserDto implements UserDetails {
 
-    private final UserDto userDto;
+    private final UserDto user;
 
     private final List<Long> dataScopes;
 
@@ -46,12 +46,12 @@ public class JwtUserDto implements UserDetails {
 
     @Override
     public String getPassword() {
-        return userDto.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userDto.getUsername();
+        return user.getUsername();
     }
 
     @Override
@@ -71,6 +71,6 @@ public class JwtUserDto implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return userDto.getEnabled();
+        return user.getEnabled();
     }
 }

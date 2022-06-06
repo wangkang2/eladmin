@@ -63,17 +63,17 @@ public class SysUserServiceImpl implements SysUserService {
             sysRoleQueryWrapper.eq("sys_role.enabled","1");
             sysRoleQueryWrapper.apply("sys_users_roles.role_id = sys_role.role_id");
             List<SysRole> sysRoleList = sysRoleMapper.findSysRoleByUserId(sysRoleQueryWrapper);
-            userDto.setSysRoles(sysRoleList);
+            userDto.setRoles(sysRoleList);
 
             QueryWrapper<SysJob> sysJobQueryWrapper = new QueryWrapper<>();
             sysJobQueryWrapper.eq("sys_users_jobs.user_id",sysUser.getUserId());
             sysJobQueryWrapper.eq("sys_job.enabled","1");
             sysJobQueryWrapper.apply("sys_users_jobs.job_id = sys_job.job_id");
             List<SysJob> sysJobList = sysJobMapper.findSysJobByUserId(sysJobQueryWrapper);
-            userDto.setSysJobs(sysJobList);
+            userDto.setJobs(sysJobList);
 
             SysDept sysDept = sysDeptMapper.selectById(sysUser.getDeptId());
-            userDto.setSysDept(sysDept);
+            userDto.setDept(sysDept);
 
             return userDto;
 

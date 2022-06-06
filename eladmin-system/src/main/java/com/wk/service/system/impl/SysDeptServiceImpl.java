@@ -8,10 +8,12 @@ package com.wk.service.system.impl;/**
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wk.entity.system.SysDept;
 import com.wk.entity.system.SysRole;
+import com.wk.entity.system.qo.DeptQuery;
 import com.wk.mapper.system.SysDeptMapper;
 import com.wk.service.system.SysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,5 +67,11 @@ public class SysDeptServiceImpl implements SysDeptService {
                 }
         );
         return list;
+    }
+
+    @Override
+    public List<SysDept> queryDept(DeptQuery deptQuery) {
+
+        return sysDeptMapper.queryDept(deptQuery);
     }
 }

@@ -1,6 +1,7 @@
 package com.wk.controller.system;
 
 import com.wk.entity.system.dto.MenuDto;
+import com.wk.entity.system.vo.MenuVo;
 import com.wk.service.system.SysMenuService;
 import com.wk.utils.SecurityUtils;
 import io.swagger.annotations.Api;
@@ -26,11 +27,12 @@ public class MenuController {
 
     @GetMapping(value = "/build")
     @ApiOperation("获取前端所需菜单")
-    public ResponseEntity<Object> buildMenus(){
+    public ResponseEntity<List<MenuVo>> buildMenus(){
 
         List<MenuDto> menuDtoList = sysMenuService.findByUserId(SecurityUtils.getCurrentUserId());
         List<MenuDto> menuDtos = sysMenuService.buildTree(menuDtoList);
-        return ResponseEntity.ok(menuDtos);
+        List<MenuVo> menuVos = sysMenuService.buildMenus(menuDtos);
+        return ResponseEntity.ok(menuVos);
     }
 
 }

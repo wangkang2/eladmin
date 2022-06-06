@@ -45,7 +45,7 @@ public class DataServiceImpl implements DataService {
 
     /**
      * 用户角色改变时需清理缓存
-     * @param user /
+     * @param userDto /
      * @return /
      */
     @Override
@@ -60,7 +60,7 @@ public class DataServiceImpl implements DataService {
             DataScopeEnum dataScopeEnum = DataScopeEnum.find(sysRole.getDataScope());
             switch (Objects.requireNonNull(dataScopeEnum)) {
                 case THIS_LEVEL:
-                    deptIds.add(userDto.getSysDept().getDeptId());
+                    deptIds.add(userDto.getDept().getDeptId());
                     break;
                 case CUSTOMIZE:
                     deptIds.addAll(getCustomize(deptIds, sysRole));
@@ -75,7 +75,7 @@ public class DataServiceImpl implements DataService {
     /**
      * 获取自定义的数据权限
      * @param deptIds 部门ID
-     * @param role 角色
+     * @param sysRole 角色
      * @return 数据权限ID
      */
     public Set<Long> getCustomize(Set<Long> deptIds, SysRole sysRole){

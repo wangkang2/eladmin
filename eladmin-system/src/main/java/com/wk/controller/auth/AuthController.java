@@ -7,6 +7,7 @@ package com.wk.controller.auth;/**
 
 import cn.hutool.core.util.IdUtil;
 import com.wf.captcha.base.Captcha;
+import com.wk.annotation.rest.AnonymousDeleteMapping;
 import com.wk.annotation.rest.AnonymousGetMapping;
 import com.wk.annotation.rest.AnonymousPostMapping;
 import com.wk.config.RsaProperties;
@@ -20,16 +21,19 @@ import com.wk.entity.auth.dto.AuthUserDto;
 import com.wk.exception.BadRequestException;
 import com.wk.utils.RedisUtils;
 import com.wk.utils.RsaUtils;
+import com.wk.utils.SecurityUtils;
 import com.wk.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -96,6 +100,12 @@ public class AuthController {
         return ResponseEntity.ok(authInfo);
     }
 
+    @ApiOperation("获取用户信息")
+    @GetMapping(value = "/info")
+    public ResponseEntity<Object> getUserInfo() {
+        return ResponseEntity.ok(SecurityUtils.getCurrentUser());
+    }
+
     @ApiOperation("获取验证码")
     @AnonymousGetMapping(value = "/code")
     public ResponseEntity<Object> getCode() {
@@ -115,6 +125,13 @@ public class AuthController {
             put("uuid", uuid);
         }};
         return ResponseEntity.ok(imgResult);
+    }
+
+    @ApiOperation("退出登录")
+    @AnonymousDeleteMapping(value = "/logout")
+    public ResponseEntity<Object> logout(HttpServletRequest request) {
+        onlineUserService.logout(tokenProvider.getToken(request));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

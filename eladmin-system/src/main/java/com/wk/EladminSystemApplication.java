@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @EnableAsync
 @RestController
-@Api(hidden = true)
 @EnableTransactionManagement
 @MapperScan("com.wk.mapper")
 @SpringBootApplication
