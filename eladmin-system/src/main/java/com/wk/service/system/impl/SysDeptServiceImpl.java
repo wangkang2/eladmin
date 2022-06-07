@@ -76,7 +76,12 @@ public class SysDeptServiceImpl implements SysDeptService {
     public List<SysDept> queryDept(DeptQuery deptQuery) {
         String dataScopeType = SecurityUtils.getDataScopeType();
         if(dataScopeType.equals(DataScopeEnum.ALL.getValue())){
-            deptQuery.setPid(null);
+            deptQuery.setPidIsNull(true);
+        }else{
+            if(ObjectUtils.isEmpty(deptQuery.getPid())){
+                List<Long> dataScopes = SecurityUtils.getCurrentUserDataScope();
+                deptQuery.setDataScopes(dataScopes);
+            }
         }
 
         List<SysDept> list = sysDeptMapper.queryDept(deptQuery);

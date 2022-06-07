@@ -18,5 +18,9 @@ public class DeptQuery {
 
     private Long pid;
 
+    private Boolean pidIsNull = false;
+
     private List<Timestamp> createTime;
+
+    private List<Long> dataScopes;
 }

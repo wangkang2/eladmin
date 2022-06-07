@@ -43,10 +43,12 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
                 SELECT("*");
                 FROM("sys_dept");
 
+                if(deptQuery.getPidIsNull()){
+                    WHERE("pid is null ");
+                }
+
                 if(!ObjectUtils.isEmpty(deptQuery.getPid())){
                     WHERE("pid = #{pid} ");
-                }else{
-                    WHERE("pid is null ");
                 }
 
                 if(!ObjectUtils.isEmpty(deptQuery.getName())){
@@ -55,6 +57,15 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
 
                 if(!ObjectUtils.isEmpty(deptQuery.getEnabled())){
                     WHERE("enabled = #{enabled} ");
+                }
+
+                if(deptQuery.getDataScopes()!=null && deptQuery.getDataScopes().size()>0){
+                    StringBuffer str = new StringBuffer();
+                    for(Long deptId:deptQuery.getDataScopes()) {
+                        str.append(deptId);
+                        str.append(",");
+                    }
+                    WHERE("dept_id in ("+str.substring(0,str.length()-1) + ")");
                 }
 
                 ORDER_BY("dept_sort");
