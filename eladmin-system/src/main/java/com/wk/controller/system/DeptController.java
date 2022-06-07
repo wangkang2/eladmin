@@ -5,9 +5,11 @@ package com.wk.controller.system;/**
  */
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.wk.entity.system.SysDept;
 import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
+import com.wk.exception.BadRequestException;
 import com.wk.service.system.SysDeptService;
 import com.wk.utils.PageUtil;
 import io.swagger.annotations.Api;
@@ -17,13 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 部门
@@ -35,17 +35,15 @@ import java.util.Set;
 @RequestMapping("/api/dept")
 public class DeptController {
 
-    private static final String ENTITY_NAME = "dept";
-
     @Autowired
     private SysDeptService sysDeptService;
 
-//    @ApiOperation("导出部门数据")
-//    @GetMapping(value = "/download")
-//    @PreAuthorize("@el.check('dept:list')")
-//    public void exportDept(HttpServletResponse response, DeptQueryCriteria criteria) throws Exception {
-//        sysDeptService.download(sysDeptService.queryAll(criteria, false), response);
-//    }
+    @ApiOperation("导出部门数据")
+    @GetMapping(value = "/download")
+    @PreAuthorize("@el.check('dept:list')")
+    public void exportDept(HttpServletResponse response, DeptQuery deptQuery) throws Exception {
+        sysDeptService.download(sysDeptService.queryDept(deptQuery), response);
+    }
 
     @ApiOperation("查询部门")
     @GetMapping
@@ -55,17 +53,53 @@ public class DeptController {
         return new ResponseEntity<>(PageUtil.toPage(deptDtos, deptDtos.size()), HttpStatus.OK);
     }
 
-//    @ApiOperation("查询部门:根据ID获取同级与上级数据")
-//    @PostMapping("/superior")
-//    @PreAuthorize("@el.check('user:list','dept:list')")
-//    public ResponseEntity<Object> getDeptSuperior(@RequestBody List<Long> ids) {
-//        Set<DeptDto> deptDtos  = new LinkedHashSet<>();
-//        for (Long id : ids) {
-//            DeptDto deptDto = sysDeptService.findDeptDtoById(id);
-//            List<DeptDto> depts = sysDeptService.getSuperior(deptDto,new ArrayList<>());
-//            deptDtos.addAll(depts);
-//        }
-//        return new ResponseEntity<>(sysDeptService.buildTree(new ArrayList<>(deptDtos)),HttpStatus.OK);
-//    }
+    @ApiOperation("查询部门:根据ID获取同级与上级数据")
+    @PostMapping("/superior")
+    @PreAuthorize("@el.check('user:list','dept:list')")
+    public ResponseEntity<Object> getDeptSuperior(@RequestBody List<Long> ids) {
+        Set<DeptDto> deptDtos  = new LinkedHashSet<>();
+        for (Long id : ids) {
+            DeptDto deptDto = sysDeptService.findDeptDtoById(id);
+            List<DeptDto> depts = sysDeptService.getSuperior(deptDto,new ArrayList<>());
+            deptDtos.addAll(depts);
+        }
+        return new ResponseEntity<>(sysDeptService.buildTree(new ArrayList<>(deptDtos)),HttpStatus.OK);
+    }
+
+    @ApiOperation("新增部门")
+    @PostMapping
+    @PreAuthorize("@el.check('dept:add')")
+    public ResponseEntity<Object> createDept(@RequestBody SysDept sysDept){
+        if (sysDept.getId() != null) {
+            throw new BadRequestException("A new dept cannot already have an ID");
+        }
+        sysDeptService.create(sysDept);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @ApiOperation("修改部门")
+    @PutMapping
+    @PreAuthorize("@el.check('dept:edit')")
+    public ResponseEntity<Object> updateDept(@RequestBody SysDept sysDept){
+        sysDeptService.update(sysDept);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation("删除部门")
+    @DeleteMapping
+    @PreAuthorize("@el.check('dept:del')")
+    public ResponseEntity<Object> deleteDept(@RequestBody Set<Long> ids){
+        List<DeptDto> deptDtos = new ArrayList<>();
+        for (Long id : ids) {
+            List<DeptDto> deptList = sysDeptService.findByPid(id);
+            deptDtos.add(sysDeptService.findDeptDtoById(id));
+            if(CollectionUtil.isNotEmpty(deptList)){
+                deptDtos = sysDeptService.getDeleteDepts(deptList, deptDtos);
+            }
+        }
+        // 验证是否被角色或用户关联
+        sysDeptService.delete(deptDtos);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

@@ -30,6 +30,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
                 FROM("sys_menu, sys_roles_menus");
                 WHERE("sys_menu.menu_id = sys_roles_menus.menu_id");
                 WHERE("sys_menu.enabled = 1");
+                WHERE("sys_menu.del_flag = 1");
                 WHERE("sys_menu.type != 2");
 
                 if(roleIds!=null && roleIds.size()>0){

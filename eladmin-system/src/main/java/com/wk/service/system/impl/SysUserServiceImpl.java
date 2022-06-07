@@ -61,6 +61,7 @@ public class SysUserServiceImpl implements SysUserService {
             QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
             sysRoleQueryWrapper.eq("sys_users_roles.user_id",sysUser.getId());
             sysRoleQueryWrapper.eq("sys_role.enabled","1");
+            sysRoleQueryWrapper.eq("sys_role.del_flag","1");
             sysRoleQueryWrapper.apply("sys_users_roles.role_id = sys_role.role_id");
             List<SysRole> sysRoleList = sysRoleMapper.findSysRoleByUserId(sysRoleQueryWrapper);
             userDto.setRoles(sysRoleList);
@@ -68,6 +69,7 @@ public class SysUserServiceImpl implements SysUserService {
             QueryWrapper<SysJob> sysJobQueryWrapper = new QueryWrapper<>();
             sysJobQueryWrapper.eq("sys_users_jobs.user_id",sysUser.getId());
             sysJobQueryWrapper.eq("sys_job.enabled","1");
+            sysJobQueryWrapper.eq("sys_job.del_flag","1");
             sysJobQueryWrapper.apply("sys_users_jobs.job_id = sys_job.job_id");
             List<SysJob> sysJobList = sysJobMapper.findSysJobByUserId(sysJobQueryWrapper);
             userDto.setJobs(sysJobList);

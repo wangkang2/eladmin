@@ -4,10 +4,9 @@ import com.wk.entity.system.SysDept;
 import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @Author: WANGKANG
@@ -26,5 +25,17 @@ public interface SysDeptService {
 
     DeptDto findDeptDtoById(Long id);
 
-//    List<DeptDto> getSuperior(DeptDto deptDto, ArrayList<DeptDto> deptDtos);
+    List<DeptDto> getSuperior(DeptDto deptDto, ArrayList<DeptDto> deptDtos);
+
+    Map<String, Object> buildTree(List<DeptDto> deptDtos);
+
+    void create(SysDept sysDept);
+
+    void update(SysDept sysDept);
+
+    List<DeptDto> getDeleteDepts(List<DeptDto> deptList, List<DeptDto> deptDtos);
+
+    void delete(List<DeptDto> deptDtos);
+
+    void download(List<DeptDto> queryDept, HttpServletResponse response) throws IOException;
 }

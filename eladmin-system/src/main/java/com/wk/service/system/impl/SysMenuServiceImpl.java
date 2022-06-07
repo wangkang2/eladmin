@@ -33,6 +33,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
         sysRoleQueryWrapper.eq("sys_users_roles.user_id",currentUserId);
         sysRoleQueryWrapper.eq("sys_role.enabled","1");
+        sysRoleQueryWrapper.eq("sys_role.del_flag","1");
         sysRoleQueryWrapper.apply("sys_users_roles.role_id = sys_role.role_id");
         List<SysRole> sysRoleList = sysRoleMapper.findSysRoleByUserId(sysRoleQueryWrapper);
 

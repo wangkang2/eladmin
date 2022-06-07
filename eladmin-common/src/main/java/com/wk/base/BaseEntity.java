@@ -32,11 +32,11 @@ public class BaseEntity implements Serializable {
     private Integer revision;
 
     @ApiModelProperty(value = "创建人", hidden = true)
-    @TableField("create_by")
+    @TableField(fill = FieldFill.INSERT, value = "create_by")
     private String createBy;
 
     @ApiModelProperty(value = "更新人", hidden = true)
-    @TableField("update_by")
+    @TableField(fill = FieldFill.INSERT_UPDATE, value = "update_by")
     private String updateBy;
 
     @ApiModelProperty(value = "创建时间", hidden = true)
@@ -46,4 +46,8 @@ public class BaseEntity implements Serializable {
     @ApiModelProperty(value = "更新时间", hidden = true)
     @TableField(fill = FieldFill.INSERT_UPDATE ,value = "update_time")
     private LocalDateTime updateTime;
+
+    @ApiModelProperty(value = "逻辑删除")
+    @TableField("del_flag")
+    private Integer delFlag = 1;
 }

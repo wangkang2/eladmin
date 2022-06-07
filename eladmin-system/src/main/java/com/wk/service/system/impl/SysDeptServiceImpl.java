@@ -5,6 +5,7 @@ package com.wk.service.system.impl;/**
  */
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wk.entity.system.SysDept;
 import com.wk.entity.system.SysRole;
@@ -13,15 +14,17 @@ import com.wk.entity.system.qo.DeptQuery;
 import com.wk.enums.DataScopeEnum;
 import com.wk.mapper.system.SysDeptMapper;
 import com.wk.service.system.SysDeptService;
+import com.wk.utils.FileUtil;
 import com.wk.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * dept
@@ -40,6 +43,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         QueryWrapper<DeptDto> sysDeptQueryWrapper = new QueryWrapper<>();
         sysDeptQueryWrapper.eq("sys_roles_depts.role_id",roleId);
         sysDeptQueryWrapper.eq("sys_role.enabled","1");
+        sysDeptQueryWrapper.eq("sys_role.del_flag","1");
         sysDeptQueryWrapper.apply("sys_roles_depts.dept_id = sys_role.dept_id");
         Set<DeptDto> deptDtos = sysDeptMapper.findSysDeptByRoleId(sysDeptQueryWrapper);
         return deptDtos;
@@ -101,26 +105,100 @@ public class SysDeptServiceImpl implements SysDeptService {
         return deptDto;
     }
 
-//    @Override
-//    public List<DeptDto> getSuperior(DeptDto deptDto, ArrayList<DeptDto> deptDtos) {
-//        if(deptDto.getPid() == null){
-//            DeptQuery deptQuery = new DeptQuery();
-//            deptQuery.setPid(null);
-//            List<SysDept> sysDepts = sysDeptMapper.queryDept(deptQuery);
-//            for(SysDept sysDept:sysDepts){
-//                DeptDto deptDto1 = new DeptDto();
-//                BeanUtils.copyProperties(sysDept,deptDto1);
-//                deptDto1.
-//                deptDtos.add(deptDto1);
-//            }
-//            return deptDtos;
-//        }
-//
-//        List<SysDept> sysDepts = findByPid(deptDto.getPid());
-//
-//        deptDtos.addAll());
-//        return getSuperior(findById(deptDto.getPid()), depts);
-//    }
+    @Override
+    public List<DeptDto> getSuperior(DeptDto deptDto, ArrayList<DeptDto> deptDtos) {
+        if(deptDto.getPid() == null){
+            DeptQuery deptQuery = new DeptQuery();
+            deptQuery.setPid(null);
+            List<DeptDto> sysDepts = sysDeptMapper.queryDept(deptQuery);
+            deptDtos.addAll(sysDepts);
+            return deptDtos;
+        }
+
+        deptDtos.addAll(findByPid(deptDto.getPid()));
+        return getSuperior(findDeptDtoById(deptDto.getPid()), deptDtos);
+    }
+
+    @Override
+    public Map<String,Object> buildTree(List<DeptDto> deptDtos) {
+        Set<DeptDto> trees = new LinkedHashSet<>();
+        Set<DeptDto> depts= new LinkedHashSet<>();
+        List<String> deptNames = deptDtos.stream().map(DeptDto::getName).collect(Collectors.toList());
+        boolean isChild;
+        for (DeptDto deptDTO : deptDtos) {
+            isChild = false;
+            if (deptDTO.getPid() == null) {
+                trees.add(deptDTO);
+            }
+            for (DeptDto it : deptDtos) {
+                if (it.getPid() != null && deptDTO.getId().equals(it.getPid())) {
+                    isChild = true;
+                    if (deptDTO.getChildren() == null) {
+                        deptDTO.setChildren(new ArrayList<>());
+                    }
+                    deptDTO.getChildren().add(it);
+                }
+            }
+            if(isChild) {
+                depts.add(deptDTO);
+            } else if(deptDTO.getPid() != null &&  !deptNames.contains(findDeptDtoById(deptDTO.getPid()).getName())) {
+                depts.add(deptDTO);
+            }
+        }
+
+        if (CollectionUtil.isEmpty(trees)) {
+            trees = depts;
+        }
+        Map<String,Object> map = new HashMap<>(2);
+        map.put("totalElements",deptDtos.size());
+        map.put("content",CollectionUtil.isEmpty(trees)? deptDtos :trees);
+        return map;
+    }
+
+    @Override
+    public void create(SysDept sysDept) {
+        sysDeptMapper.insert(sysDept);
+    }
+
+    @Override
+    public void update(SysDept sysDept) {
+        sysDeptMapper.updateById(sysDept);
+    }
+
+    @Override
+    public List<DeptDto> getDeleteDepts(List<DeptDto> deptList, List<DeptDto> deptDtos) {
+        for (DeptDto dept : deptList) {
+            deptDtos.add(dept);
+            List<DeptDto> depts = findByPid(dept.getId());
+            if(depts!=null && depts.size()!=0){
+                getDeleteDepts(depts, deptDtos);
+            }
+        }
+        return deptDtos;
+    }
+
+    @Override
+    public void delete(List<DeptDto> deptDtos) {
+        for(DeptDto deptDto:deptDtos){
+            SysDept sysDept = new SysDept();
+            BeanUtils.copyProperties(deptDto,sysDept);
+            sysDept.setDelFlag(0);
+            sysDeptMapper.updateById(sysDept);
+        }
+    }
+
+    @Override
+    public void download(List<DeptDto> deptDtos, HttpServletResponse response) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (DeptDto deptDTO : deptDtos) {
+            Map<String,Object> map = new LinkedHashMap<>();
+            map.put("部门名称", deptDTO.getName());
+            map.put("部门状态", deptDTO.getEnabled() ? "启用" : "停用");
+            map.put("创建日期", deptDTO.getCreateTime());
+            list.add(map);
+        }
+        FileUtil.downloadExcel(list, response);
+    }
 
 
 }

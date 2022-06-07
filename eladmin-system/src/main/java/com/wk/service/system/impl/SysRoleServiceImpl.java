@@ -48,6 +48,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
         sysRoleQueryWrapper.eq("sys_users_roles.user_id",userId);
         sysRoleQueryWrapper.eq("sys_role.enabled","1");
+        sysRoleQueryWrapper.eq("sys_role.del_flag","1");
         sysRoleQueryWrapper.apply("sys_users_roles.role_id = sys_role.role_id");
         List<SysRole> sysRoleList = sysRoleMapper.findSysRoleByUserId(sysRoleQueryWrapper);
         return sysRoleList;
@@ -65,6 +66,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             QueryWrapper<SysMenu> sysMenuQueryWrapper = new QueryWrapper<>();
             sysMenuQueryWrapper.eq("sys_roles_menus.role_id",sysRole.getId());
             sysMenuQueryWrapper.eq("sys_menu.enabled","1");
+            sysMenuQueryWrapper.eq("sys_menu.del_flag","1");
             sysMenuQueryWrapper.apply("sys_roles_menus.menu_id = sys_menu.menu_id");
             List<SysMenu> sysMenuList = sysMenuMapper.findSysMenuByRoleId(sysMenuQueryWrapper);
             roleDto.setSysMenus(sysMenuList);

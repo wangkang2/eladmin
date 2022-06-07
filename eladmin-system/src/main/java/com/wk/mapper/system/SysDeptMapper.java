@@ -40,8 +40,10 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
     class SysDeptProvider{
         public String queryDept(DeptQuery deptQuery){
             return new SQL(){{
-                SELECT("dept_id as id,pid,sub_count,name,dept_sort,enabled,revision,create_by,update_by,create_time,update_time");
+                SELECT("dept_id as id,pid,sub_count,name,dept_sort,enabled,revision,create_by,update_by,create_time");
                 FROM("sys_dept");
+
+                WHERE("del_flag = 1 ");
 
                 if(deptQuery.getPidIsNull()){
                     WHERE("pid is null ");
@@ -57,6 +59,10 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
 
                 if(!ObjectUtils.isEmpty(deptQuery.getEnabled())){
                     WHERE("enabled = #{enabled} ");
+                }
+
+                if(deptQuery.getCreateTime()!=null && deptQuery.getCreateTime().size()==2){
+                    WHERE("create_time between '" + deptQuery.getCreateTime().get(0) + "' and '" + deptQuery.getCreateTime().get(1) + "'");
                 }
 
                 if(deptQuery.getDataScopes()!=null && deptQuery.getDataScopes().size()>0){
