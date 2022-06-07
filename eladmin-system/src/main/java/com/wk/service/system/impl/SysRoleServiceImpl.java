@@ -65,7 +65,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             QueryWrapper<SysMenu> sysMenuQueryWrapper = new QueryWrapper<>();
             sysMenuQueryWrapper.eq("sys_roles_menus.role_id",sysRole.getRoleId());
             sysMenuQueryWrapper.eq("sys_menu.enabled","1");
-            sysMenuQueryWrapper.apply("sys_roles_menus.role_id = sys_menu.role_id");
+            sysMenuQueryWrapper.apply("sys_roles_menus.menu_id = sys_menu.menu_id");
             List<SysMenu> sysMenuList = sysMenuMapper.findSysMenuByRoleId(sysMenuQueryWrapper);
             roleDto.setSysMenus(sysMenuList);
             roleDtos.add(roleDto);

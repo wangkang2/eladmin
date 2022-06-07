@@ -35,7 +35,7 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
     Set<SysDept> findSysDeptByRoleId(@Param("ew") QueryWrapper<SysDept> sysDeptQueryWrapper);
 
     @SelectProvider(type = SysDeptMapper.SysDeptProvider.class,method = "queryDept")
-    List<DeptDto> queryDept(DeptQuery deptQuery);
+    List<SysDept> queryDept(DeptQuery deptQuery);
 
     class SysDeptProvider{
         public String queryDept(DeptQuery deptQuery){

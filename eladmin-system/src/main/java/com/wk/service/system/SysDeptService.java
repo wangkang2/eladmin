@@ -22,5 +22,5 @@ public interface SysDeptService {
 
     List<Long> getDeptChildren(List<SysDept> deptChildren);
 
-    List<DeptDto> queryDept(DeptQuery deptQuery);
+    List<SysDept> queryDept(DeptQuery deptQuery);
 }

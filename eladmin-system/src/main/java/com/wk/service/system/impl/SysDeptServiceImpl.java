@@ -10,8 +10,10 @@ import com.wk.entity.system.SysDept;
 import com.wk.entity.system.SysRole;
 import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
+import com.wk.enums.DataScopeEnum;
 import com.wk.mapper.system.SysDeptMapper;
 import com.wk.service.system.SysDeptService;
+import com.wk.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -71,8 +73,36 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public List<DeptDto> queryDept(DeptQuery deptQuery) {
+    public List<SysDept> queryDept(DeptQuery deptQuery) {
+        String dataScopeType = SecurityUtils.getDataScopeType();
+        if(dataScopeType.equals(DataScopeEnum.ALL.getValue())){
+            deptQuery.setPid(null);
+        }
 
+        List<SysDept> list = sysDeptMapper.queryDept(deptQuery);
+
+        if(ObjectUtils.isEmpty(dataScopeType)){
+            return deduplication(list);
+        }
         return sysDeptMapper.queryDept(deptQuery);
     }
+
+
+    private List<SysDept> deduplication(List<SysDept> list) {
+        List<SysDept> deptDtos = new ArrayList<>();
+        for (SysDept deptDto : list) {
+            boolean flag = true;
+            for (SysDept dto : list) {
+                if (dto.getDeptId().equals(deptDto.getPid())) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                deptDtos.add(deptDto);
+            }
+        }
+        return deptDtos;
+    }
+
 }

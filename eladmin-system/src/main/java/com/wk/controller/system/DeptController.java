@@ -12,6 +12,7 @@ import com.wk.service.system.SysDeptService;
 import com.wk.utils.PageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +51,14 @@ public class DeptController {
     @GetMapping
     @PreAuthorize("@el.check('user:list','dept:list')")
     public ResponseEntity<Object> queryDept(DeptQuery deptQuery) throws Exception {
-        List<DeptDto> sysDepts = sysDeptService.queryDept(deptQuery);
-        return new ResponseEntity<>(PageUtil.toPage(sysDepts, sysDepts.size()), HttpStatus.OK);
+        List<SysDept> sysDepts = sysDeptService.queryDept(deptQuery);
+        List<DeptDto> deptDtos = new ArrayList<>();
+        for(SysDept sysDept:sysDepts){
+            DeptDto deptDto = new DeptDto();
+            BeanUtils.copyProperties(sysDept,deptDto);
+            deptDto.setId(sysDept.getDeptId());
+            deptDtos.add(deptDto);
+        }
+        return new ResponseEntity<>(PageUtil.toPage(deptDtos, deptDtos.size()), HttpStatus.OK);
     }
 }

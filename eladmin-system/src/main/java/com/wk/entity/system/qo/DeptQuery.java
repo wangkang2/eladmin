@@ -18,7 +18,5 @@ public class DeptQuery {
 
     private Long pid;
 
-    private Boolean pidIsNull;
-
     private List<Timestamp> createTime;
 }

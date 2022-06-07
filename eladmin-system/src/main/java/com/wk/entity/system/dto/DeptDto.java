@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 public class DeptDto extends SysDept {
 
+    private Long id;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<DeptDto> children;
