@@ -5,16 +5,19 @@ package com.wk.controller.system;/**
  */
 
 
+import com.wk.entity.system.SysDict;
+import com.wk.entity.system.qo.DictQuery;
 import com.wk.service.system.SysDictService;
+import com.wk.utils.PageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -42,11 +45,31 @@ public class DictController {
 //        dictService.download(dictService.queryAll(criteria), response);
 //    }
 
-//    @ApiOperation("查询字典")
-//    @GetMapping(value = "/all")
-//    @PreAuthorize("@el.check('dict:list')")
-//    public ResponseEntity<Object> queryDict(){
-//        return new ResponseEntity<>(sysDictService.queryAllDict(),HttpStatus.OK);
+    @ApiOperation("查询字典")
+    @GetMapping(value = "/all")
+    @PreAuthorize("@el.check('dict:list')")
+    public ResponseEntity<List<SysDict>> queryDict(){
+        return new ResponseEntity<>(sysDictService.queryDict(new DictQuery()),HttpStatus.OK);
+    }
+
+    @ApiOperation("查询字典")
+    @GetMapping
+    @PreAuthorize("@el.check('dict:list')")
+    public ResponseEntity<Object> queryDict(DictQuery dictQuery, Pageable pageable){
+        List<SysDict> sysDicts = sysDictService.queryDict(dictQuery,pageable);
+        return new ResponseEntity<>(PageUtil.toPage(sysDicts,sysDicts.size()),HttpStatus.OK);
+    }
+
+//    @Log("新增字典")
+//    @ApiOperation("新增字典")
+//    @PostMapping
+//    @PreAuthorize("@el.check('dict:add')")
+//    public ResponseEntity<Object> createDict(@Validated @RequestBody Dict resources){
+//        if (resources.getId() != null) {
+//            throw new BadRequestException("A new "+ ENTITY_NAME +" cannot already have an ID");
+//        }
+//        dictService.create(resources);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
 //    }
 
 }

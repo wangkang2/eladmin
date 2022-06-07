@@ -40,7 +40,7 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
     class SysDeptProvider{
         public String queryDept(DeptQuery deptQuery){
             return new SQL(){{
-                SELECT("dept_id as id,pid,sub_count,name,dept_sort,enabled,revision,create_by,update_by,create_time");
+                SELECT("dept_id as id,pid,sub_count,name,dept_sort,enabled,revision,create_by,create_time");
                 FROM("sys_dept");
 
                 WHERE("del_flag = 1 ");
