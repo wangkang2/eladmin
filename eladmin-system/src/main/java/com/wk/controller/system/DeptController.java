@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 部门
@@ -61,4 +61,18 @@ public class DeptController {
         }
         return new ResponseEntity<>(PageUtil.toPage(deptDtos, deptDtos.size()), HttpStatus.OK);
     }
+
+//    @ApiOperation("查询部门:根据ID获取同级与上级数据")
+//    @PostMapping("/superior")
+//    @PreAuthorize("@el.check('user:list','dept:list')")
+//    public ResponseEntity<Object> getDeptSuperior(@RequestBody List<Long> ids) {
+//        Set<DeptDto> deptDtos  = new LinkedHashSet<>();
+//        for (Long id : ids) {
+//            DeptDto deptDto = sysDeptService.findById(id);
+//            List<DeptDto> depts = deptService.getSuperior(deptDto, new ArrayList<>());
+//            deptDtos.addAll(depts);
+//        }
+//        return new ResponseEntity<>(deptService.buildTree(new ArrayList<>(deptDtos)),HttpStatus.OK);
+//    }
+
 }
