@@ -3,6 +3,7 @@ package com.wk.mapper.system;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wk.entity.system.SysMenu;
+import com.wk.entity.system.dto.MenuDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -16,16 +17,16 @@ import java.util.Map;
 @Mapper
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
-    @Select("SELECT sys_menu.*  FROM sys_menu, sys_roles_menus ${ew.customSqlSegment} ")
+    @Select("SELECT sys_menu.menu_id as id,sys_menu.*  FROM sys_menu, sys_roles_menus ${ew.customSqlSegment} ")
     List<SysMenu> findSysMenuByRoleId(@Param("ew") QueryWrapper<SysMenu> sysMenuQueryWrapper);
 
     @SelectProvider(type = SysMenuProvider.class,method = "findSysMenu")
-    List<SysMenu> findSysMenu(List<Long> roleIds);
+    List<MenuDto> findSysMenu(List<Long> roleIds);
 
     class SysMenuProvider{
         public String findSysMenu(List<Long> roleIds){
             return new SQL(){{
-                SELECT("sys_menu.*");
+                SELECT("sys_menu.menu_id as id,sys_menu.*");
                 FROM("sys_menu, sys_roles_menus");
                 WHERE("sys_menu.menu_id = sys_roles_menus.menu_id");
                 WHERE("sys_menu.enabled = 1");

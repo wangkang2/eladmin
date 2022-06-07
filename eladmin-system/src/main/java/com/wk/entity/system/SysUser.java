@@ -27,7 +27,7 @@ public class SysUser extends BaseEntity {
 
     @ApiModelProperty(value = "人员ID", hidden = true)
     @TableId(type = IdType.AUTO,value = "user_id")
-    private Long userId;
+    private Long id;
 
     @ApiModelProperty(value = "部门ID")
     @TableField("dept_id")

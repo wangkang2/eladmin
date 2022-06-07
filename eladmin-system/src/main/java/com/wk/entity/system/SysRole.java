@@ -25,7 +25,7 @@ public class SysRole extends BaseEntity {
 
     @ApiModelProperty(value = "角色ID", hidden = true)
     @TableId(type = IdType.AUTO,value = "role_id")
-    private Long roleId;
+    private Long id;
 
     @ApiModelProperty(value = "角色名称")
     @TableField("name")

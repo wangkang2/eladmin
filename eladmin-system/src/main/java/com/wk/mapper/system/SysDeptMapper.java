@@ -31,16 +31,16 @@ import java.util.Set;
 @Mapper
 public interface SysDeptMapper extends BaseMapper<SysDept> {
 
-    @Select("SELECT sys_dept.*  FROM sys_dept, sys_roles_depts ${ew.customSqlSegment} ")
-    Set<SysDept> findSysDeptByRoleId(@Param("ew") QueryWrapper<SysDept> sysDeptQueryWrapper);
+    @Select("SELECT sys_dept.dept_id as id,sys_dept.*  FROM sys_dept, sys_roles_depts ${ew.customSqlSegment} ")
+    Set<DeptDto> findSysDeptByRoleId(@Param("ew") QueryWrapper<DeptDto> sysDeptQueryWrapper);
 
     @SelectProvider(type = SysDeptMapper.SysDeptProvider.class,method = "queryDept")
-    List<SysDept> queryDept(DeptQuery deptQuery);
+    List<DeptDto> queryDept(DeptQuery deptQuery);
 
     class SysDeptProvider{
         public String queryDept(DeptQuery deptQuery){
             return new SQL(){{
-                SELECT("*");
+                SELECT("dept_id as id,pid,sub_count,name,dept_sort,enabled,revision,create_by,update_by,create_time,update_time");
                 FROM("sys_dept");
 
                 if(deptQuery.getPidIsNull()){

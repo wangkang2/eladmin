@@ -17,6 +17,7 @@ package com.wk.service.system.impl;
 
 import com.wk.entity.system.SysDept;
 import com.wk.entity.system.SysRole;
+import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.dto.UserDto;
 import com.wk.enums.DataScopeEnum;
 import com.wk.service.system.DataService;
@@ -49,18 +50,18 @@ public class DataServiceImpl implements DataService {
      * @return /
      */
     @Override
-    @Cacheable(key = "'user:' + #p0.userId")
+    @Cacheable(key = "'user:' + #p0.id")
     public List<Long> getDeptIds(UserDto userDto) {
         // 用于存储部门id
         Set<Long> deptIds = new HashSet<>();
         // 查询用户角色
-        List<SysRole> sysRoles = sysRoleService.findSysRoleByUserId(userDto.getUserId());
+        List<SysRole> sysRoles = sysRoleService.findSysRoleByUserId(userDto.getId());
         // 获取对应的部门ID
         for (SysRole sysRole : sysRoles) {
             DataScopeEnum dataScopeEnum = DataScopeEnum.find(sysRole.getDataScope());
             switch (Objects.requireNonNull(dataScopeEnum)) {
                 case THIS_LEVEL:
-                    deptIds.add(userDto.getDept().getDeptId());
+                    deptIds.add(userDto.getDept().getId());
                     break;
                 case CUSTOMIZE:
                     deptIds.addAll(getCustomize(deptIds, sysRole));
@@ -79,10 +80,10 @@ public class DataServiceImpl implements DataService {
      * @return 数据权限ID
      */
     public Set<Long> getCustomize(Set<Long> deptIds, SysRole sysRole){
-        Set<SysDept> sysDepts = sysDeptService.findSysDeptByRoleId(sysRole.getRoleId());
+        Set<DeptDto> sysDepts = sysDeptService.findSysDeptByRoleId(sysRole.getId());
         for (SysDept sysDept : sysDepts) {
-            deptIds.add(sysDept.getDeptId());
-            List<SysDept> deptChildren = sysDeptService.findByPid(sysDept.getDeptId());
+            deptIds.add(sysDept.getId());
+            List<DeptDto> deptChildren = sysDeptService.findByPid(sysDept.getId());
             if (deptChildren != null && deptChildren.size() != 0) {
                 deptIds.addAll(sysDeptService.getDeptChildren(deptChildren));
             }

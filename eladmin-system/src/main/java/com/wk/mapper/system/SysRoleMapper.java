@@ -18,6 +18,6 @@ import java.util.List;
 @Mapper
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    @Select("SELECT sys_role.*  FROM sys_role, sys_users_roles ${ew.customSqlSegment} ")
+    @Select("SELECT sys_role.role_id as id,sys_role.*  FROM sys_role, sys_users_roles ${ew.customSqlSegment} ")
     List<SysRole> findSysRoleByUserId(@Param("ew") QueryWrapper<SysRole> sysRoleQueryWrapper);
 }

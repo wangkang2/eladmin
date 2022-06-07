@@ -25,7 +25,7 @@ public class SysJob extends BaseEntity {
 
     @ApiModelProperty(value = "岗位ID", hidden = true)
     @TableId(type = IdType.AUTO,value = "job_id")
-    private Long jobId;
+    private Long id;
 
     @ApiModelProperty(value = "岗位名称")
     @TableField("name")

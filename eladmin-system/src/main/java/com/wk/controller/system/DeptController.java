@@ -51,14 +51,7 @@ public class DeptController {
     @GetMapping
     @PreAuthorize("@el.check('user:list','dept:list')")
     public ResponseEntity<Object> queryDept(DeptQuery deptQuery) throws Exception {
-        List<SysDept> sysDepts = sysDeptService.queryDept(deptQuery);
-        List<DeptDto> deptDtos = new ArrayList<>();
-        for(SysDept sysDept:sysDepts){
-            DeptDto deptDto = new DeptDto();
-            BeanUtils.copyProperties(sysDept,deptDto);
-            deptDto.setId(sysDept.getDeptId());
-            deptDtos.add(deptDto);
-        }
+        List<DeptDto> deptDtos = sysDeptService.queryDept(deptQuery);
         return new ResponseEntity<>(PageUtil.toPage(deptDtos, deptDtos.size()), HttpStatus.OK);
     }
 
@@ -68,11 +61,11 @@ public class DeptController {
 //    public ResponseEntity<Object> getDeptSuperior(@RequestBody List<Long> ids) {
 //        Set<DeptDto> deptDtos  = new LinkedHashSet<>();
 //        for (Long id : ids) {
-//            DeptDto deptDto = sysDeptService.findById(id);
-//            List<DeptDto> depts = deptService.getSuperior(deptDto, new ArrayList<>());
+//            DeptDto deptDto = sysDeptService.findDeptDtoById(id);
+//            List<DeptDto> depts = sysDeptService.getSuperior(deptDto,new ArrayList<>());
 //            deptDtos.addAll(depts);
 //        }
-//        return new ResponseEntity<>(deptService.buildTree(new ArrayList<>(deptDtos)),HttpStatus.OK);
+//        return new ResponseEntity<>(sysDeptService.buildTree(new ArrayList<>(deptDtos)),HttpStatus.OK);
 //    }
 
 }

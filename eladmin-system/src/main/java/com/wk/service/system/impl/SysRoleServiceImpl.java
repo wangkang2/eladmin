@@ -63,7 +63,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             BeanUtils.copyProperties(sysRole,roleDto);
 
             QueryWrapper<SysMenu> sysMenuQueryWrapper = new QueryWrapper<>();
-            sysMenuQueryWrapper.eq("sys_roles_menus.role_id",sysRole.getRoleId());
+            sysMenuQueryWrapper.eq("sys_roles_menus.role_id",sysRole.getId());
             sysMenuQueryWrapper.eq("sys_menu.enabled","1");
             sysMenuQueryWrapper.apply("sys_roles_menus.menu_id = sys_menu.menu_id");
             List<SysMenu> sysMenuList = sysMenuMapper.findSysMenuByRoleId(sysMenuQueryWrapper);
@@ -83,7 +83,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             return permissions.stream().map(AuthorityDto::new)
                     .collect(Collectors.toList());
         }
-        List<RoleDto> roles = findRoleDtoByUserId(userDto.getUserId());
+        List<RoleDto> roles = findRoleDtoByUserId(userDto.getId());
         permissions = roles.stream().flatMap(role -> role.getSysMenus().stream())
                 .map(SysMenu::getPermission)
                 .filter(StringUtils::isNotBlank).collect(Collectors.toSet());

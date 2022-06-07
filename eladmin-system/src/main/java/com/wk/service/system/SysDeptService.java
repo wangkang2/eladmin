@@ -4,6 +4,7 @@ import com.wk.entity.system.SysDept;
 import com.wk.entity.system.dto.DeptDto;
 import com.wk.entity.system.qo.DeptQuery;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -14,13 +15,16 @@ import java.util.Set;
  * @Description:
  */
 public interface SysDeptService {
-    List<SysDept> queryAll();
 
-    Set<SysDept> findSysDeptByRoleId(Long roleId);
+    Set<DeptDto> findSysDeptByRoleId(Long roleId);
 
-    List<SysDept> findByPid(Long pId);
+    List<DeptDto> findByPid(Long pId);
 
-    List<Long> getDeptChildren(List<SysDept> deptChildren);
+    List<Long> getDeptChildren(List<DeptDto> deptChildren);
 
-    List<SysDept> queryDept(DeptQuery deptQuery);
+    List<DeptDto> queryDept(DeptQuery deptQuery);
+
+    DeptDto findDeptDtoById(Long id);
+
+//    List<DeptDto> getSuperior(DeptDto deptDto, ArrayList<DeptDto> deptDtos);
 }

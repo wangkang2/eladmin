@@ -25,7 +25,7 @@ public class SysDept extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "部门ID", hidden = true)
     @TableId(type = IdType.AUTO,value = "dept_id")
-    private Long deptId;
+    private Long id;
 
     @ApiModelProperty(value = "上级部门")
     @TableField("pid")
@@ -55,11 +55,11 @@ public class SysDept extends BaseEntity implements Serializable {
             return false;
         }
         SysDept sysDept = (SysDept) o;
-        return Objects.equals(deptId, sysDept.deptId) && Objects.equals(pid, sysDept.pid) && Objects.equals(subCount, sysDept.subCount) && Objects.equals(name, sysDept.name) && Objects.equals(deptSort, sysDept.deptSort);
+        return Objects.equals(id, sysDept.id) && Objects.equals(pid, sysDept.pid) && Objects.equals(subCount, sysDept.subCount) && Objects.equals(name, sysDept.name) && Objects.equals(deptSort, sysDept.deptSort);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), deptId, pid, subCount, name, deptSort);
+        return Objects.hash(super.hashCode(), id, pid, subCount, name, deptSort);
     }
 }

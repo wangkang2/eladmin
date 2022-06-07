@@ -25,7 +25,7 @@ public class SysMenu extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "菜单ID", hidden = true)
     @TableId(type = IdType.AUTO,value = "menu_id")
-    private Long menuId;
+    private Long id;
 
     @ApiModelProperty(value = "上级菜单")
     @TableField("pid")
@@ -85,11 +85,11 @@ public class SysMenu extends BaseEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SysMenu sysMenu = (SysMenu) o;
-        return Objects.equals(menuId, sysMenu.menuId) && Objects.equals(pid, sysMenu.pid) && Objects.equals(subCount, sysMenu.subCount) && Objects.equals(type, sysMenu.type) && Objects.equals(title, sysMenu.title) && Objects.equals(name, sysMenu.name) && Objects.equals(component, sysMenu.component) && Objects.equals(menuSort, sysMenu.menuSort) && Objects.equals(icon, sysMenu.icon) && Objects.equals(path, sysMenu.path) && Objects.equals(iFrame, sysMenu.iFrame) && Objects.equals(cache, sysMenu.cache) && Objects.equals(hidden, sysMenu.hidden) && Objects.equals(permission, sysMenu.permission);
+        return Objects.equals(id, sysMenu.id) && Objects.equals(pid, sysMenu.pid) && Objects.equals(subCount, sysMenu.subCount) && Objects.equals(type, sysMenu.type) && Objects.equals(title, sysMenu.title) && Objects.equals(name, sysMenu.name) && Objects.equals(component, sysMenu.component) && Objects.equals(menuSort, sysMenu.menuSort) && Objects.equals(icon, sysMenu.icon) && Objects.equals(path, sysMenu.path) && Objects.equals(iFrame, sysMenu.iFrame) && Objects.equals(cache, sysMenu.cache) && Objects.equals(hidden, sysMenu.hidden) && Objects.equals(permission, sysMenu.permission);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), menuId, pid, subCount, type, title, name, component, menuSort, icon, path, iFrame, cache, hidden, permission);
+        return Objects.hash(super.hashCode(), id, pid, subCount, type, title, name, component, menuSort, icon, path, iFrame, cache, hidden, permission);
     }
 }

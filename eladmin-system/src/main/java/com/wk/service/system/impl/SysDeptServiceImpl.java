@@ -14,6 +14,7 @@ import com.wk.enums.DataScopeEnum;
 import com.wk.mapper.system.SysDeptMapper;
 import com.wk.service.system.SysDeptService;
 import com.wk.utils.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -35,37 +36,39 @@ public class SysDeptServiceImpl implements SysDeptService {
     private SysDeptMapper sysDeptMapper;
 
     @Override
-    public List<SysDept> queryAll() {
-        return sysDeptMapper.selectList(null);
-    }
-
-    @Override
-    public Set<SysDept> findSysDeptByRoleId(Long roleId) {
-        QueryWrapper<SysDept> sysDeptQueryWrapper = new QueryWrapper<>();
+    public Set<DeptDto> findSysDeptByRoleId(Long roleId) {
+        QueryWrapper<DeptDto> sysDeptQueryWrapper = new QueryWrapper<>();
         sysDeptQueryWrapper.eq("sys_roles_depts.role_id",roleId);
         sysDeptQueryWrapper.eq("sys_role.enabled","1");
         sysDeptQueryWrapper.apply("sys_roles_depts.dept_id = sys_role.dept_id");
-        Set<SysDept> sysDepts = sysDeptMapper.findSysDeptByRoleId(sysDeptQueryWrapper);
-        return sysDepts;
+        Set<DeptDto> deptDtos = sysDeptMapper.findSysDeptByRoleId(sysDeptQueryWrapper);
+        return deptDtos;
     }
 
     @Override
-    public List<SysDept> findByPid(Long pId) {
+    public List<DeptDto> findByPid(Long pId) {
         QueryWrapper<SysDept> sysDeptQueryWrapper = new QueryWrapper<>();
         sysDeptQueryWrapper.eq("pid",pId);
-        return sysDeptMapper.selectList(sysDeptQueryWrapper);
+        List<SysDept> sysDepts = sysDeptMapper.selectList(sysDeptQueryWrapper);
+        List<DeptDto> deptDtos = new ArrayList<>();
+        for(SysDept sysDept:sysDepts){
+            DeptDto deptDto = new DeptDto();
+            BeanUtils.copyProperties(sysDept,deptDto);
+            deptDtos.add(deptDto);
+        }
+        return deptDtos;
     }
 
     @Override
-    public List<Long> getDeptChildren(List<SysDept> deptList) {
+    public List<Long> getDeptChildren(List<DeptDto> deptList) {
         List<Long> list = new ArrayList<>();
         deptList.forEach(dept -> {
                     if (dept!=null && dept.getEnabled()) {
-                        List<SysDept> depts = findByPid(dept.getDeptId());
+                        List<DeptDto> depts = findByPid(dept.getId());
                         if (depts.size() != 0) {
                             list.addAll(getDeptChildren(depts));
                         }
-                        list.add(dept.getDeptId());
+                        list.add(dept.getId());
                     }
                 }
         );
@@ -73,7 +76,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public List<SysDept> queryDept(DeptQuery deptQuery) {
+    public List<DeptDto> queryDept(DeptQuery deptQuery) {
         String dataScopeType = SecurityUtils.getDataScopeType();
 
         if(ObjectUtils.isEmpty(deptQuery.getPid())){
@@ -88,22 +91,36 @@ public class SysDeptServiceImpl implements SysDeptService {
         return sysDeptMapper.queryDept(deptQuery);
     }
 
+    @Override
+    public DeptDto findDeptDtoById(Long id) {
 
-    private List<SysDept> deduplication(List<SysDept> list) {
-        List<SysDept> deptDtos = new ArrayList<>();
-        for (SysDept deptDto : list) {
-            boolean flag = true;
-            for (SysDept dto : list) {
-                if (dto.getDeptId().equals(deptDto.getPid())) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag){
-                deptDtos.add(deptDto);
-            }
-        }
-        return deptDtos;
+        SysDept sysDept = sysDeptMapper.selectById(id);
+        DeptDto deptDto = new DeptDto();
+        BeanUtils.copyProperties(sysDept,deptDto);
+
+        return deptDto;
     }
+
+//    @Override
+//    public List<DeptDto> getSuperior(DeptDto deptDto, ArrayList<DeptDto> deptDtos) {
+//        if(deptDto.getPid() == null){
+//            DeptQuery deptQuery = new DeptQuery();
+//            deptQuery.setPid(null);
+//            List<SysDept> sysDepts = sysDeptMapper.queryDept(deptQuery);
+//            for(SysDept sysDept:sysDepts){
+//                DeptDto deptDto1 = new DeptDto();
+//                BeanUtils.copyProperties(sysDept,deptDto1);
+//                deptDto1.
+//                deptDtos.add(deptDto1);
+//            }
+//            return deptDtos;
+//        }
+//
+//        List<SysDept> sysDepts = findByPid(deptDto.getPid());
+//
+//        deptDtos.addAll());
+//        return getSuperior(findById(deptDto.getPid()), depts);
+//    }
+
 
 }

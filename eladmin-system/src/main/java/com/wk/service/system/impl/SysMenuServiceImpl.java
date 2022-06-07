@@ -37,16 +37,9 @@ public class SysMenuServiceImpl implements SysMenuService {
         List<SysRole> sysRoleList = sysRoleMapper.findSysRoleByUserId(sysRoleQueryWrapper);
 
 
-        List<Long> roleIds = sysRoleList.stream().map(SysRole::getRoleId).collect(Collectors.toList());
+        List<Long> roleIds = sysRoleList.stream().map(SysRole::getId).collect(Collectors.toList());
 
-        List<SysMenu> sysMenuList = sysMenuMapper.findSysMenu(roleIds);
-
-        List<MenuDto> menuDtos= new ArrayList<>();
-        for(SysMenu sysMenu:sysMenuList){
-            MenuDto menuDto = new MenuDto();
-            BeanUtils.copyProperties(sysMenu,menuDto);
-            menuDtos.add(menuDto);
-        }
+        List<MenuDto> menuDtos = sysMenuMapper.findSysMenu(roleIds);
 
         return menuDtos;
     }
@@ -60,17 +53,17 @@ public class SysMenuServiceImpl implements SysMenuService {
                 trees.add(menuDTO);
             }
             for (MenuDto it : menuDtos) {
-                if (menuDTO.getMenuId().equals(it.getPid())) {
+                if (menuDTO.getId().equals(it.getPid())) {
                     if (menuDTO.getChildren() == null) {
                         menuDTO.setChildren(new ArrayList<>());
                     }
                     menuDTO.getChildren().add(it);
-                    ids.add(it.getMenuId());
+                    ids.add(it.getId());
                 }
             }
         }
         if(trees.size() == 0){
-            trees = menuDtos.stream().filter(s -> !ids.contains(s.getMenuId())).collect(Collectors.toList());
+            trees = menuDtos.stream().filter(s -> !ids.contains(s.getId())).collect(Collectors.toList());
         }
         return trees;
     }
