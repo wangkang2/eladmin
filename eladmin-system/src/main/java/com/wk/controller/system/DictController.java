@@ -7,6 +7,7 @@ package com.wk.controller.system;/**
 
 import com.wk.entity.system.SysDict;
 import com.wk.entity.system.qo.DictQuery;
+import com.wk.exception.BadRequestException;
 import com.wk.service.system.SysDictService;
 import com.wk.utils.PageUtil;
 import io.swagger.annotations.Api;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 字典控制层
@@ -38,12 +40,12 @@ public class DictController {
 
     private final SysDictService sysDictService;
 
-//    @ApiOperation("导出字典数据")
-//    @GetMapping(value = "/download")
-//    @PreAuthorize("@el.check('dict:list')")
-//    public void exportDict(HttpServletResponse response, DictQueryCriteria criteria) throws IOException {
-//        dictService.download(dictService.queryAll(criteria), response);
-//    }
+    @ApiOperation("导出字典数据")
+    @GetMapping(value = "/download")
+    @PreAuthorize("@el.check('dict:list')")
+    public void exportDict(HttpServletResponse response, DictQuery dictQuery) throws IOException {
+        sysDictService.download(sysDictService.queryDict(new DictQuery()), response);
+    }
 
     @ApiOperation("查询字典")
     @GetMapping(value = "/all")
@@ -60,16 +62,31 @@ public class DictController {
         return new ResponseEntity<>(PageUtil.toPage(sysDicts,sysDicts.size()),HttpStatus.OK);
     }
 
-//    @Log("新增字典")
-//    @ApiOperation("新增字典")
-//    @PostMapping
-//    @PreAuthorize("@el.check('dict:add')")
-//    public ResponseEntity<Object> createDict(@Validated @RequestBody Dict resources){
-//        if (resources.getId() != null) {
-//            throw new BadRequestException("A new "+ ENTITY_NAME +" cannot already have an ID");
-//        }
-//        dictService.create(resources);
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
+    @ApiOperation("新增字典")
+    @PostMapping
+    @PreAuthorize("@el.check('dict:add')")
+    public ResponseEntity<Object> createDict(@RequestBody SysDict sysDict){
+        if (sysDict.getId() != null) {
+            throw new BadRequestException("A new dict cannot already have an ID");
+        }
+        sysDictService.create(sysDict);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @ApiOperation("修改字典")
+    @PutMapping
+    @PreAuthorize("@el.check('dict:edit')")
+    public ResponseEntity<Object> updateDict(@RequestBody SysDict sysDict){
+        sysDictService.update(sysDict);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation("删除字典")
+    @DeleteMapping
+    @PreAuthorize("@el.check('dict:del')")
+    public ResponseEntity<Object> deleteDict(@RequestBody Set<Long> ids){
+        sysDictService.delete(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

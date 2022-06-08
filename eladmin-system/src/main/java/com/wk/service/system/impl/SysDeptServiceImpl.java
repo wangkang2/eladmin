@@ -19,6 +19,7 @@ import com.wk.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -156,11 +157,13 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void create(SysDept sysDept) {
         sysDeptMapper.insert(sysDept);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(SysDept sysDept) {
         sysDeptMapper.updateById(sysDept);
     }
@@ -178,6 +181,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(List<DeptDto> deptDtos) {
         for(DeptDto deptDto:deptDtos){
             SysDept sysDept = new SysDept();
