@@ -26,4 +26,6 @@ public interface SysDictDetailMapper  extends BaseMapper<SysDictDetail> {
     @Select("select detail.detail_id as id,detail.dict_id,detail.label,detail.value,detail.dict_sort from sys_dict_detail detail inner join sys_dict dict on dict.dict_id = detail.dict_id ${ew.customSqlSegment} ")
     Page<SysDictDetail> queryDictDetail(@Param("ew") QueryWrapper<SysDictDetail> queryWrapper, Page page);
 
+    @Select("select detail.detail_id as id,detail.dict_id,detail.label,detail.value,detail.dict_sort from sys_dict_detail detail inner join sys_dict dict on dict.dict_id = detail.dict_id ${ew.customSqlSegment} ")
+    List<SysDictDetail> findSysDictDetailByName(@Param("ew") QueryWrapper<SysDictDetail> sysDictDetailQueryWrapper);
 }

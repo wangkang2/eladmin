@@ -25,7 +25,7 @@ public class BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "是否启用")
     @TableField("enabled")
-    private Boolean enabled;
+    private Boolean enabled = true;
 
     @ApiModelProperty(value = "乐观锁")
     @Version

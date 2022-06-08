@@ -36,7 +36,7 @@ import java.util.Set;
 @CacheConfig(cacheNames = "dict")
 public class SysDictServiceImpl implements SysDictService {
 
-    private SysDictMapper sysDictMapper;
+    private final SysDictMapper sysDictMapper;
     private final RedisUtils redisUtils;
 
     @Override
@@ -52,18 +52,18 @@ public class SysDictServiceImpl implements SysDictService {
     }
 
     @Override
-    public List<SysDict> queryDict(DictQuery dictQuery, Pageable pageable) {
+    public Page<SysDict> queryDict(DictQuery dictQuery, Pageable pageable) {
 
         Page<SysDict> page = new Page<>(pageable.getPageNumber(),pageable.getPageSize());
 
-        QueryWrapper<SysDict> sysUserQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysDict> sysDictQueryWrapper = new QueryWrapper<>();
 
         if(!ObjectUtils.isEmpty(dictQuery.getName())){
-            sysUserQueryWrapper.eq("name",dictQuery.getName());
+            sysDictQueryWrapper.eq("name",dictQuery.getName());
         }
 
-        sysDictMapper.selectPage(page,sysUserQueryWrapper);
-        return page.getRecords();
+        sysDictMapper.selectPage(page,sysDictQueryWrapper);
+        return page;
     }
 
     @Override

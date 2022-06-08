@@ -5,6 +5,7 @@ package com.wk.controller.system;/**
  */
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wk.entity.system.SysDict;
 import com.wk.entity.system.qo.DictQuery;
 import com.wk.exception.BadRequestException;
@@ -58,8 +59,8 @@ public class DictController {
     @GetMapping
     @PreAuthorize("@el.check('dict:list')")
     public ResponseEntity<Object> queryDict(DictQuery dictQuery, Pageable pageable){
-        List<SysDict> sysDicts = sysDictService.queryDict(dictQuery,pageable);
-        return new ResponseEntity<>(PageUtil.toPage(sysDicts,sysDicts.size()),HttpStatus.OK);
+        Page<SysDict> sysDicts = sysDictService.queryDict(dictQuery,pageable);
+        return new ResponseEntity<>(PageUtil.toPage(sysDicts.getRecords(),sysDicts.getTotal()),HttpStatus.OK);
     }
 
     @ApiOperation("新增字典")

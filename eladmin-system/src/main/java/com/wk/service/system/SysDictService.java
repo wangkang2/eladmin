@@ -1,5 +1,6 @@
 package com.wk.service.system;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wk.entity.system.SysDict;
 import com.wk.entity.system.qo.DictQuery;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import java.util.Set;
 public interface SysDictService {
     List<SysDict> queryDict(DictQuery dictQuery);
 
-    List<SysDict> queryDict(DictQuery dictQuery, Pageable pageable);
+    Page<SysDict> queryDict(DictQuery dictQuery, Pageable pageable);
 
     void create(SysDict sysDict);
 
